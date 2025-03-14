@@ -33,7 +33,8 @@ public class Util implements AutoCloseable {
 
     @Override
     public void close() {
-        try {connection.close();
+        try {
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
