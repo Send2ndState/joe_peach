@@ -4,6 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.List;
 
@@ -42,10 +43,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        Session session = factory.openSession();
+        Transaction tx = session.beginTransaction();
         session.save(new User(name, lastName, age));
-        session.getTransaction().commit();
+        tx.commit();
         System.out.println("User с именем — " + name + " добавлен в базу данных");
     }
 
@@ -60,9 +61,9 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        Transaction tx = session.beginTransaction();
         List<User> users = session.createQuery("from User").getResultList();
-        session.getTransaction().commit();
+        tx.commit();
         for (User user : users) {
             System.out.println(user);
         }

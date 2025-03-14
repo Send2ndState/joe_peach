@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.util;
 
 import java.util.Properties;
+
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -9,7 +10,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 import java.sql.*;
 
-public class Util {
+public class Util implements AutoCloseable {
     public static void main(String[] args) {
 
     }
@@ -17,16 +18,25 @@ public class Util {
 
     private final static String URL = "jdbc:mysql://localhost:3306/pp1";
     private final static String USERNAME = "root";
-    private final static String PASSWORD = "Irbislol124+";
+    private final static String PASSWORD = "root";
+    private static Connection connection;
 
-    public static Connection getConnection() {
-        Connection connection = null;
+    public Connection getConnection() {
+
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return connection;
+    }
+
+    @Override
+    public void close() {
+        try {connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static SessionFactory getSessionFactory() {
@@ -39,7 +49,7 @@ public class Util {
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 settings.put(Environment.URL, "jdbc:mysql://localhost:3306/pp1?useSSL=false");
                 settings.put(Environment.USER, "root");
-                settings.put(Environment.PASS, "Irbislol124+");
+                settings.put(Environment.PASS, "root");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
 
                 settings.put(Environment.SHOW_SQL, "true");
